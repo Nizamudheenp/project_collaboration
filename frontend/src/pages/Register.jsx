@@ -28,13 +28,11 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-tr from-green-500 to-teal-600 items-center justify-center text-white flex-col">
         <h1 className="text-5xl font-bold mb-4">Join ProjectFlow</h1>
         <p className="text-lg max-w-md text-center">Start organizing your team's work and boosting productivity.</p>
       </div>
 
-      {/* Right Panel */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 bg-gray-100">
         <form
           onSubmit={handleRegister}

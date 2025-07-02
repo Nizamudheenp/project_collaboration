@@ -28,13 +28,11 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-tr from-blue-500 to-indigo-700 items-center justify-center text-white flex-col">
         <h1 className="text-5xl font-bold mb-4">ProjectFlow</h1>
         <p className="text-lg max-w-md text-center">Collaborate efficiently. Build together. Track progress visually.</p>
       </div>
 
-      {/* Right Panel */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 bg-gray-100">
         <form
           onSubmit={handleSubmit}

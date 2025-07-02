@@ -13,6 +13,10 @@ exports.createTeam = async (req, res) => {
       members: [{ userId: req.user._id, role: 'admin' }],
     });
 
+    await UserDB.findByIdAndUpdate(req.user._id, {
+      $push: {  teams: { teamId: team._id, role: 'admin' }  },
+    });
+
     res.status(201).json(team);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
