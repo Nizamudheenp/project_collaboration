@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import { FiMoreVertical } from 'react-icons/fi';
+import { Menu } from '@headlessui/react';
 import api from '../api';
 import { setSelectedTeam } from '../redux/slices/teamSlice';
 
@@ -18,22 +19,35 @@ const Dashboard = () => {
     const [teamName, setTeamName] = useState('');
     const [createError, setCreateError] = useState('');
 
+    const fetchTeams = async () => {
+        try {
+            const res = await api.get('/teams', {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+            setTeams(res.data || []);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to fetch teams');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        const fetchTeams = async () => {
-            try {
-                const res = await api.get('/teams', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
-                setTeams(res.data);
-            } catch (err) {
-                setError(err.response?.data?.message || 'Failed to fetch teams');
-            } finally {
-                setLoading(false);
-            }
-        }
         if (user?.token) fetchTeams();
     }, [user])
+
+    const deleteTeam = async (teamId) => {
+        try {
+            await api.delete(`/teams/${teamId}`, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+            fetchTeams();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to delete team');
+        }
+    }
+
+
 
     return (
         <div className="h-screen flex">
@@ -58,13 +72,31 @@ const Dashboard = () => {
                             <div
                                 key={team._id}
                                 onClick={() => dispatch(setSelectedTeam(team))}
-                                className={`p-4 flex justify-between cursor-pointer border hover:bg-blue-50 ${selectedTeam?._id === team._id ? 'bg-blue-100 font-medium' : ''
+                                className={`relative p-4 flex justify-between cursor-pointer border hover:bg-blue-50 ${selectedTeam?._id === team._id ? 'bg-blue-100 font-medium' : ''
                                     }`}
                             >
                                 {team.teamName}
-                                <span>
-                                    <FiMoreVertical size={20} />
-                                </span>
+                                <Menu as="div" className="relative inline-block text-left" onClick={(e) => e.stopPropagation()}>
+                                    <Menu.Button className="p-1 text-gray-600 hover:text-black">
+                                        <FiMoreVertical />
+                                    </Menu.Button>
+
+                                    <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right bg-white border rounded shadow-md z-50">
+                                        <div className="py-1 text-sm">
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <button
+                                                        onClick={()=>deleteTeam(team._id)}
+                                                        className={`block w-full text-left px-4 py-2 text-red-600 ${active ? 'bg-gray-100' : ''
+                                                            }`}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </Menu.Item>
+                                        </div>
+                                    </Menu.Items>
+                                </Menu>
                             </div>
                         ))
                     )}
@@ -97,7 +129,7 @@ const Dashboard = () => {
                             <button
                                 onClick={async () => {
                                     try {
-                                        const res = await api.post('/teams',{ teamName },
+                                        const res = await api.post('/teams', { teamName },
                                             {
                                                 headers: { Authorization: `Bearer ${user.token}` },
                                             }

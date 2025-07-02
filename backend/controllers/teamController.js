@@ -103,7 +103,7 @@ exports.deleteTeam = async (req, res) => {
     if (!team) return res.status(404).json({ message: 'Team not found' });
 
     const isAdmin = team.members.find(
-      (member) => member.userId.toString() === req.user_id.toString() && member.role === 'admin'
+      (member) => member.userId.toString() === req.user._id.toString() && member.role === 'admin'
     );
     if (!isAdmin) return res.status(403).json({ message: "Only admins can delete team" });
 
