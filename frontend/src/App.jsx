@@ -4,15 +4,22 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
+import { Toaster } from 'sonner';
+import MembersPage from './pages/MembersPage';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
     <Router>
+      <Navbar />
+      <Toaster richColors position='top-right' />
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-          <Route
+        <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
@@ -20,6 +27,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+        path="/dashboard/members"
+        element={
+        <ProtectedRoute>
+        <MembersPage />
+        </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   )

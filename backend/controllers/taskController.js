@@ -51,7 +51,7 @@ exports.projectTasks = async (req, res) => {
     );
     if (!isMember) return res.status(403).json({ message: 'You are not a team member' });
 
-    const tasks = await TaskDB.find({ projectId }).sort({ createdAt: -1 });
+    const tasks = await TaskDB.find({ projectId }).populate('assignedTo', 'name').sort({ createdAt: -1 });
 
     res.status(200).json(tasks);
   } catch (err) {
@@ -91,7 +91,9 @@ exports.updateTaskStatus = async (req, res) => {
     task.status = status;
     await task.save();
 
-    res.status(200).json({ message: 'Task status updated', task });
+    const populatedTask = await TaskDB.findById(task._id).populate('assignedTo', 'name');
+    res.status(200).json({ message: 'Task status updated', task: populatedTask });
+
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

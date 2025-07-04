@@ -1,28 +1,54 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { setUser } from '../redux/slices/authSlice';
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
+
+  if (user) return <Navigate to="/dashboard" replace />;
+
+  const validate = (field, value) => {
+    let error = '';
+    if (field === 'email') {
+      if (!value) error = 'Email is required';
+      else if (!/\S+@\S+\.\S+/.test(value)) error = 'Invalid email format';
+    }
+    if (field === 'password') {
+      if (!value) error = 'Password is required';
+      else if (value.length < 5) error = 'Password must be at least 5 characters';
+    }
+    setErrors((prev) => ({ ...prev, [field]: error }));
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    validate(name, value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const emailError = !formData.email ? 'Email is required' : '';
+    const passwordError = !formData.password ? 'Password is required' : '';
+    if (emailError || passwordError) {
+      setErrors({ email: emailError, password: passwordError });
+      return;
+    }
+
     try {
       const res = await api.post('/auth/login', formData);
       dispatch(setUser(res.data));
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setServerError(err.response?.data?.message || 'Login failed');
     }
   };
 
@@ -40,29 +66,36 @@ const Login = () => {
         >
           <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Login</h2>
 
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+          {serverError && <p className="text-red-500 text-sm mb-3">{serverError}</p>}
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="w-full mb-6 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="mb-3">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+          </div>
+
+          <div className="mb-4">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+          </div>
+
           <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-medium">
             Login
           </button>
+
           <p className="text-sm mt-4 text-center">
             Don't have an account?{' '}
             <a href="/register" className="text-blue-600 hover:underline">
