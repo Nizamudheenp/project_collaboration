@@ -7,6 +7,7 @@ import TaskCard from './TaskCard';
 import CreateTaskModal from './CreateTaskModal';
 import CommentModal from './CommentModal';
 import { clearSelectedTask } from '../redux/slices/taskSlice';
+import socket from '../socket';
 
 const statusOrder = ['todo', 'inprogress', 'done'];
 const statusLabels = {
@@ -21,7 +22,7 @@ const TaskBoard = () => {
   const [tasksByStatus, setTasksByStatus] = useState({ todo: [], inprogress: [], done: [] });
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const { selectedTask } = useSelector((state) => state.task); 
+  const { selectedTask } = useSelector((state) => state.task);
   const dispatch = useDispatch();
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -54,6 +55,30 @@ const TaskBoard = () => {
     if (selectedProject?._id) fetchTasks();
   }, [selectedProject]);
 
+  useEffect(() => {
+    socket.on('taskStatusUpdated', (updatedTask) => {
+      setTasksByStatus((prev) => {
+        const newGrouped = { todo: [], inprogress: [], done: [] };
+
+        for (const status in prev) {
+          prev[status].forEach((t) => {
+            if (t._id !== updatedTask._id) {
+              newGrouped[t.status].push(t);
+            }
+          });
+        }
+
+        newGrouped[updatedTask.status].push(updatedTask);
+        return newGrouped;
+      });
+    });
+
+    return () => {
+      socket.off('taskStatusUpdated');
+    };
+  }, []);
+
+
   const handleDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
     if (!destination) return;
@@ -62,7 +87,7 @@ const TaskBoard = () => {
     const draggedTask = tasksByStatus[source.droppableId][source.index];
     const isAdmin = draggedTask.createdBy === user._id;
     const isAssigned = draggedTask.assignedTo?._id === user._id;
-    if (!isAdmin && !isAssigned) return; 
+    if (!isAdmin && !isAssigned) return;
 
     const newTasksByStatus = { ...tasksByStatus };
     newTasksByStatus[source.droppableId].splice(source.index, 1);
@@ -74,6 +99,7 @@ const TaskBoard = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const updatedTask = res.data.task;
+      socket.emit('taskStatusUpdated', updatedTask);
       setTasksByStatus((prev) => {
         const updated = { ...prev };
         updated[destination.droppableId] = updated[destination.droppableId].map((t) =>
