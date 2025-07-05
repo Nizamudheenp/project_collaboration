@@ -1,6 +1,7 @@
 const TaskDB = require('../models/taskModel');
 const ProjectDB = require('../models/projectModel');
 const TeamDB = require('../models/teamModel');
+const ActivityDB = require('../models/activityModel');
 
 exports.createTask = async (req, res) => {
   const { title, description, projectId, assignedTo, dueDate } = req.body;
@@ -90,6 +91,14 @@ exports.updateTaskStatus = async (req, res) => {
 
     task.status = status;
     await task.save();
+
+    await ActivityDB.create({
+      taskId: task._id,
+      projectId: task.projectId,
+      userId: req.user._id,
+      action: 'status_updated',
+      details: `Status changed to ${status}`,
+    });
 
     const populatedTask = await TaskDB.findById(task._id).populate('assignedTo', 'name');
     res.status(200).json({ message: 'Task status updated', task: populatedTask });

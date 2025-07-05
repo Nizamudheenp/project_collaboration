@@ -70,7 +70,6 @@ const ProjectPanel = () => {
     <div className="p-6 overflow-y-auto h-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold">Projects for {selectedTeam.teamName}</h2>
-        {/* modal for project three dots ,remember =  need a component for  dynamic modal  */}
         {isAdmin && (
           <Menu as="div" className="relative inline-block text-left">
             <Menu.Button className="p-1 text-gray-600 hover:text-black">

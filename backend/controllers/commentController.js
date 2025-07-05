@@ -2,6 +2,8 @@ const CommentDB = require('../models//commentModel');
 const TaskDB = require('../models/taskModel');
 const ProjectDB = require('../models/projectModel');
 const TeamDB = require('../models/teamModel');
+const ActivityDB = require('../models/activityModel');
+
 
 exports.addComment = async (req, res) => {
     const { taskId, text } = req.body;
@@ -32,6 +34,14 @@ exports.addComment = async (req, res) => {
             taskId,
             userId: req.user._id,
             text,
+        });
+
+        await ActivityDB.create({
+            taskId,
+            projectId: task.projectId,
+            userId: req.user._id,
+            action: 'comment_added',
+            details: `Commented: "${text}"`,
         });
 
         res.status(201).json(comment);

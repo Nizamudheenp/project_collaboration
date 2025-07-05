@@ -8,6 +8,7 @@ import CreateTaskModal from './CreateTaskModal';
 import CommentModal from './CommentModal';
 import { clearSelectedTask } from '../redux/slices/taskSlice';
 import socket from '../socket';
+import ActivityLogModal from './ActivityLogModal';
 
 const statusOrder = ['todo', 'inprogress', 'done'];
 const statusLabels = {
@@ -24,7 +25,7 @@ const TaskBoard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const { selectedTask } = useSelector((state) => state.task);
   const dispatch = useDispatch();
-
+  const [activeTaskForLog, setActiveTaskForLog] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const { selectedTeam } = useSelector((state) => state.team);
 
@@ -190,6 +191,7 @@ const TaskBoard = () => {
                                   task={task}
                                   onDelete={handleDelete}
                                   onStatusChange={handleStatusChange}
+                                  onShowActivity={() => setActiveTaskForLog(task)}
                                 />
                               </div>
                             )}
@@ -203,6 +205,7 @@ const TaskBoard = () => {
                               task={task}
                               onDelete={handleDelete}
                               onStatusChange={handleStatusChange}
+                              onShowActivity={() => setActiveTaskForLog(task)}
                             />
                           </div>
                         );
@@ -230,6 +233,14 @@ const TaskBoard = () => {
           onClose={() => dispatch(clearSelectedTask())}
         />
       )}
+
+      {activeTaskForLog && (
+        <ActivityLogModal
+          task={activeTaskForLog}
+          onClose={() => setActiveTaskForLog(null)}
+        />
+      )}
+
     </div>
   );
 };
