@@ -5,6 +5,8 @@ import api from '../api';
 import { toast } from 'sonner';
 import TaskCard from './TaskCard';
 import CreateTaskModal from './CreateTaskModal';
+import CommentModal from './CommentModal';
+import { clearSelectedTask } from '../redux/slices/taskSlice';
 
 const statusOrder = ['todo', 'inprogress', 'done'];
 const statusLabels = {
@@ -19,6 +21,8 @@ const TaskBoard = () => {
   const [tasksByStatus, setTasksByStatus] = useState({ todo: [], inprogress: [], done: [] });
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const { selectedTask } = useSelector((state) => state.task); 
+  const dispatch = useDispatch();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const { selectedTeam } = useSelector((state) => state.team);
@@ -191,6 +195,13 @@ const TaskBoard = () => {
         <CreateTaskModal
           onClose={() => setShowCreateModal(false)}
           onTaskCreated={handleTaskCreated}
+        />
+      )}
+
+      {selectedTask && (
+        <CommentModal
+          task={selectedTask}
+          onClose={() => dispatch(clearSelectedTask())}
         />
       )}
     </div>

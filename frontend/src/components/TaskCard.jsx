@@ -1,12 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiTrash2 } from 'react-icons/fi';
 import api from '../api';
+import { setSelectedTask } from '../redux/slices/taskSlice';
 
 const TaskCard = ({ task, onDelete }) => {
   const { user } = useSelector((state) => state.auth);
   const isAssigned = task.assignedTo?._id === user._id;
   const isAdmin = task.createdBy === user._id;
+  const dispatch = useDispatch();
 
   const handleDelete = async () => {
     try {
@@ -20,7 +22,7 @@ const TaskCard = ({ task, onDelete }) => {
   };
 
   return (
-    <div className="p-3 bg-white border rounded shadow space-y-2">
+    <div onClick={() => dispatch(setSelectedTask(task))} className="p-3 bg-white border rounded shadow space-y-2">
       <div className="flex justify-between items-center">
         <h4 className="font-semibold">{task.title}</h4>
         {isAdmin && (
