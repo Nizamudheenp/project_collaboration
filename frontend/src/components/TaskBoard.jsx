@@ -9,6 +9,9 @@ import CommentModal from './CommentModal';
 import { clearSelectedTask } from '../redux/slices/taskSlice';
 import socket from '../socket';
 import ActivityLogModal from './ActivityLogModal';
+import GanttChartView from './GanttChartView';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const statusOrder = ['todo', 'inprogress', 'done'];
 const statusLabels = {
@@ -28,6 +31,8 @@ const TaskBoard = () => {
   const [activeTaskForLog, setActiveTaskForLog] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const { selectedTeam } = useSelector((state) => state.team);
+  const [showGantt, setShowGantt] = useState(false);
+
 
   useEffect(() => {
     if (!selectedTeam || !user) return;
@@ -145,6 +150,21 @@ const TaskBoard = () => {
     }));
   };
 
+  const exportBoardAsPDF = () => {
+    const board = document.getElementById('task-board-area');
+    if (!board) return;
+
+    html2canvas(board, { scale: 2, useCORS: true }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('landscape', 'pt', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${selectedProject?.projectName || 'task-board'}.pdf`);
+    });
+  };
+
+
   return (
     <div className="h-full">
       <div className="flex items-center justify-between mb-4">
@@ -157,11 +177,28 @@ const TaskBoard = () => {
             + New Task
           </button>
         )}
+
+        <button
+          onClick={() => setShowGantt(true)}
+          className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-800 mr-2"
+        >
+          Gantt View
+        </button>
+
+        <button
+          onClick={exportBoardAsPDF}
+          className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 mr-2"
+        >
+          Export Board as PDF
+        </button>
+
+
       </div>
 
       {loading ? (
         <p className="text-sm text-gray-500">Loading tasks...</p>
       ) : (
+        <div id="task-board-area">
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {statusOrder.map((status) => (
@@ -218,6 +255,7 @@ const TaskBoard = () => {
             ))}
           </div>
         </DragDropContext>
+        </div>
       )}
 
       {showCreateModal && (
@@ -240,6 +278,14 @@ const TaskBoard = () => {
           onClose={() => setActiveTaskForLog(null)}
         />
       )}
+
+      {showGantt && (
+        <GanttChartView
+          tasks={[...tasksByStatus.todo, ...tasksByStatus.inprogress, ...tasksByStatus.done]}
+          onClose={() => setShowGantt(false)}
+        />
+      )}
+
 
     </div>
   );

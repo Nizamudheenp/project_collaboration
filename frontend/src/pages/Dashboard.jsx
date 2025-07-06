@@ -1,10 +1,14 @@
+// Changes in Dashboard.jsx
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import TeamListSidebar from '../components/TeamListSidebar';
 import ProjectPanel from '../components/ProjectPanel';
 import TaskBoard from '../components/TaskBoard';
+import { clearSelectedTeam } from '../redux/slices/teamSlice';
+import { clearSelectedProject } from '../redux/slices/projectSlice';
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
   const { selectedTeam } = useSelector((state) => state.team);
   const { selectedProject } = useSelector((state) => state.project);
 
@@ -35,6 +39,16 @@ const Dashboard = () => {
     }
   }, [selectedTeam, selectedProject, isMobile]);
 
+  const handleBack = () => {
+    if (viewState === 'tasks') {
+      dispatch(clearSelectedProject());
+      setViewState('projects');
+    } else if (viewState === 'projects') {
+      dispatch(clearSelectedTeam());
+      setViewState('teams');
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col md:flex-row">
       {!isMobile && (
@@ -50,6 +64,17 @@ const Dashboard = () => {
 
       {isMobile && (
         <>
+          {viewState !== 'teams' && (
+            <div className="p-2">
+              <button
+                onClick={handleBack}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                ← Back
+              </button>
+            </div>
+          )}
+
           {viewState === 'teams' && <div className="w-full"><TeamListSidebar /></div>}
           {viewState === 'projects' && <div className="w-full"><ProjectPanel /></div>}
           {viewState === 'tasks' && <div className="w-full p-4"><TaskBoard /></div>}
