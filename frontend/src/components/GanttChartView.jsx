@@ -1,4 +1,3 @@
-// src/components/GanttChartView.jsx
 import React from 'react';
 import { Chart } from 'react-google-charts';
 
@@ -46,20 +45,20 @@ const GanttChartView = ({ tasks, onClose }) => {
       barCornerRadius: 4,
       labelStyle: {
         fontSize: 12,
-        color: '#374151', // neutral text
+        color: '#374151',
         fontName: 'Inter',
       },
       criticalPathEnabled: false,
-      innerGridTrack: { fill: '#f4f4f5' },      // light rows
-      innerGridDarkTrack: { fill: '#e5e7eb' },  // alternating rows
+      innerGridTrack: { fill: '#f4f4f5' },
+      innerGridDarkTrack: { fill: '#e5e7eb' },
     },
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-2">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-auto">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-2">
+      <div className="bg-white dark:bg-black p-6 rounded-2xl shadow-xl w-full max-w-6xl max-h-[90vh] overflow-auto border dark:border-neutral-800">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">📊 Gantt Chart</h2>
+          <h2 className="text-xl font-semibold text-black dark:text-white">📊 Gantt Chart</h2>
           <button
             onClick={onClose}
             className="text-sm text-red-500 hover:underline font-medium"
@@ -68,7 +67,7 @@ const GanttChartView = ({ tasks, onClose }) => {
           </button>
         </div>
 
-        <div className="w-full overflow-auto">
+        <div className="w-full overflow-x-auto">
           <Chart
             chartType="Gantt"
             width="100%"

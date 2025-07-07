@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -8,8 +8,12 @@ import { Toaster } from 'sonner';
 import MembersPage from './pages/MembersPage';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
+import { loadTheme } from '../theme';
 
 function App() {
+  useEffect(() => {
+    loadTheme();
+  }, []);
   return (
     <Router>
       <Navbar />
@@ -29,12 +33,12 @@ function App() {
         />
 
         <Route
-        path="/dashboard/members"
-        element={
-        <ProtectedRoute>
-        <MembersPage />
-        </ProtectedRoute>
-        } />
+          path="/dashboard/members"
+          element={
+            <ProtectedRoute>
+              <MembersPage />
+            </ProtectedRoute>
+          } />
       </Routes>
     </Router>
   )

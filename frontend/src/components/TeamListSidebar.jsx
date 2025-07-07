@@ -7,6 +7,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import api from '../api';
 import { setSelectedTeam } from '../redux/slices/teamSlice';
 import InviteMemberModal from './InviteMemberModal';
+import { toast } from 'sonner';
 
 const TeamListSidebar = () => {
   const dispatch = useDispatch();
@@ -19,10 +20,8 @@ const TeamListSidebar = () => {
   const [showModal, setShowModal] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [createError, setCreateError] = useState('');
-
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedTeamForInvite, setSelectedTeamForInvite] = useState(null);
-
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -47,6 +46,7 @@ const TeamListSidebar = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTeams((prev) => prev.filter((team) => team._id !== teamId));
+      toast.success('Team deleted successfully');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to delete team');
     }
@@ -63,52 +63,55 @@ const TeamListSidebar = () => {
       setTeamName('');
       setCreateError('');
       setShowModal(false);
+      toast.success('Team created successfully');
     } catch (err) {
       setCreateError(err.response?.data?.message || 'Failed to create team');
     }
   };
 
   return (
-    <div className="h-full bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Teams</h2>
-        <button className="text-blue-600 hover:text-blue-800" onClick={() => setShowModal(true)}>
+    <div className="h-full bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-colors">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Teams</h2>
+        <button className="text-green-700 dark:text-green-400 hover:text-green-900" onClick={() => setShowModal(true)}>
           <MdOutlineGroupAdd size={22} />
         </button>
       </div>
 
       <div className="overflow-y-auto flex-1">
         {loading ? (
-          <p className="p-4 text-sm text-gray-500">Loading teams...</p>
+          <p className="p-4 text-sm text-gray-500 dark:text-gray-400">Loading teams...</p>
         ) : error ? (
           <p className="p-4 text-sm text-red-500">{error}</p>
         ) : teams.length === 0 ? (
-          <p className="p-4 text-sm text-gray-500">No teams yet.</p>
+          <p className="p-4 text-sm text-gray-500 dark:text-gray-400">No teams yet.</p>
         ) : (
           teams.map((team) => (
             <div
               key={team._id}
               onClick={() => dispatch(setSelectedTeam(team))}
-              className={`relative p-4 flex justify-between cursor-pointer border hover:bg-blue-50 ${selectedTeam?._id === team._id ? 'bg-blue-100 font-medium' : ''
+              className={`relative p-4 flex justify-between items-center cursor-pointer border-b border-gray-100 dark:border-gray-800 hover:bg-green-50 dark:hover:bg-neutral-800 transition ${selectedTeam?._id === team._id
+                  ? 'bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-300 font-medium'
+                  : 'text-gray-800 dark:text-white'
                 }`}
             >
-              {team.teamName}
+              <span className="truncate">{team.teamName}</span>
 
-              {/* modal for three dots */}
               <Menu as="div" className="relative inline-block text-left" onClick={(e) => e.stopPropagation()}>
-                <Menu.Button className="p-1 text-gray-600 hover:text-black">
+                <Menu.Button className="p-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
                   <FiMoreVertical />
                 </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right bg-white border rounded shadow-md z-50">
-                  <div className="py-1 px-2 text-sm">
+                <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right bg-white dark:bg-neutral-800 border border-gray-200 dark:border-gray-700 rounded shadow-md z-50 text-sm">
+                  <div className="py-1 px-2">
                     <Menu.Item>
                       {({ active }) => (
                         <button
                           onClick={() => {
-                            setShowInviteModal(true); 
-                            setSelectedTeamForInvite(team); 
+                            setShowInviteModal(true);
+                            setSelectedTeamForInvite(team);
                           }}
-                          className={`block w-full text-left ${active ? 'bg-gray-100' : ''}`}
+                          className={`block w-full text-left px-2 py-1 rounded ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                            }`}
                         >
                           Invite
                         </button>
@@ -119,7 +122,7 @@ const TeamListSidebar = () => {
                       {({ active }) => (
                         <button
                           onClick={() => {
-                            confirmAlert({
+                             confirmAlert({         //remember to style alerts
                               title: 'Confirm to delete',
                               message: `Are you sure to delete "${team.teamName}"? This will erase all your team data`,
                               buttons: [
@@ -127,14 +130,12 @@ const TeamListSidebar = () => {
                                   label: 'Yes',
                                   onClick: () => deleteTeam(team._id),
                                 },
-                                {
-                                  label: 'No',
-                                  onClick: () => { },
-                                },
+                                { label: 'No' },
                               ],
                             });
                           }}
-                          className={`block w-full text-left text-red-600 ${active ? 'bg-gray-100' : ''}`}
+                          className={`block w-full text-left px-2 py-1 rounded text-red-600 ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                            }`}
                         >
                           Delete
                         </button>
@@ -150,26 +151,26 @@ const TeamListSidebar = () => {
 
       {showModal && (
         <div className="fixed inset-0 p-3 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
-            <h2 className="text-lg font-semibold mb-4">Create New Team</h2>
+          <div className="bg-white dark:bg-neutral-800 p-6 rounded-xl shadow-xl w-full max-w-sm">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Create New Team</h2>
             {createError && <p className="text-sm text-red-500 mb-2">{createError}</p>}
             <input
               type="text"
               placeholder="Team Name"
-              className="w-full p-2 border rounded mb-4"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-neutral-900 text-gray-800 dark:text-white mb-4"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
             />
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 text-sm"
+                className="px-3 py-1 rounded bg-gray-300 dark:bg-neutral-700 text-gray-800 dark:text-white hover:bg-gray-400 dark:hover:bg-neutral-600 text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateTeam}
-                className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 text-sm"
+                className="px-3 py-1 rounded bg-green-900 hover:bg-green-700 text-white text-sm"
               >
                 Create
               </button>
@@ -188,7 +189,6 @@ const TeamListSidebar = () => {
           }}
         />
       )}
-
     </div>
   );
 };

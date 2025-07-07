@@ -12,6 +12,9 @@ import ActivityLogModal from './ActivityLogModal';
 import GanttChartView from './GanttChartView';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { Menu } from '@headlessui/react';
+import { FiMoreVertical } from 'react-icons/fi';
+
 
 const statusOrder = ['todo', 'inprogress', 'done'];
 const statusLabels = {
@@ -113,6 +116,7 @@ const TaskBoard = () => {
         );
         return updated;
       });
+      toast.success('Task status updated');
     } catch (err) {
       toast.error('Failed to update status');
       fetchTasks();
@@ -165,96 +169,128 @@ const TaskBoard = () => {
   };
 
 
+
   return (
-    <div className="h-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">{selectedProject.projectName} - Tasks</h2>
-        {isAdmin && (
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            + New Task
-          </button>
-        )}
+    <div className="h-full px-2 md:px-4 py-4">
+      <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
+        <h2 className="text-xl font-semibold text-black dark:text-white">
+          {selectedProject.projectName} - Tasks
+        </h2>
 
-        <button
-          onClick={() => setShowGantt(true)}
-          className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-800 mr-2"
-        >
-          Gantt View
-        </button>
+        <Menu as="div" className="relative inline-block text-left">
+          <Menu.Button className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition">
+            <FiMoreVertical size={20} />
+          </Menu.Button>
+          <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right bg-white dark:bg-neutral-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
+            <div className="py-1 text-sm">
+              {isAdmin && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className={`block w-full text-left px-4 py-2 ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                        }`}
+                    >
+                      New Task
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
 
-        <button
-          onClick={exportBoardAsPDF}
-          className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 mr-2"
-        >
-          Export Board as PDF
-        </button>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={() => setShowGantt(true)}
+                    className={`block w-full text-left px-4 py-2 ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                      }`}
+                  >
+                    Gantt Chart
+                  </button>
+                )}
+              </Menu.Item>
 
-
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={exportBoardAsPDF}
+                    className={`block w-full text-left px-4 py-2 ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                      }`}
+                  >
+                    Export PDF
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Menu>
       </div>
 
+
       {loading ? (
-        <p className="text-sm text-gray-500">Loading tasks...</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Loading tasks...</p>
       ) : (
         <div id="task-board-area">
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {statusOrder.map((status) => (
-              <div key={status} className="bg-gray-100 p-4 rounded shadow-sm">
-                <h3 className="text-md font-semibold mb-2">{statusLabels[status]}</h3>
-                <Droppable droppableId={status}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="space-y-2 min-h-[100px]"
-                    >
-                      {tasksByStatus[status].map((task, index) => {
-                        const isAdmin = task.createdBy === user._id;
-                        const isAssigned = task.assignedTo?._id === user._id;
-                        const isDraggable = isAdmin || isAssigned;
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {statusOrder.map((status) => (
+                <div
+                  key={status}
+                  className="bg-white dark:bg-black border dark:border-gray-700 p-4 rounded-2xl shadow-md"
+                >
+                  <h3 className="text-md font-semibold mb-3 text-black dark:text-white">
+                    {statusLabels[status]}
+                  </h3>
+                  <Droppable droppableId={status}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="space-y-3 min-h-[100px]"
+                      >
+                        {tasksByStatus[status].map((task, index) => {
+                          const isAdmin = task.createdBy === user._id;
+                          const isAssigned = task.assignedTo?._id === user._id;
+                          const isDraggable = isAdmin || isAssigned;
 
-                        return isDraggable ? (
-                          <Draggable key={task._id} draggableId={task._id} index={index}>
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <TaskCard
-                                  task={task}
-                                  onDelete={handleDelete}
-                                  onStatusChange={handleStatusChange}
-                                  onShowActivity={() => setActiveTaskForLog(task)}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : (
-                          <div
-                            key={task._id}
-                            className="p-3 bg-gray-100 border rounded text-gray-400 cursor-not-allowed"
-                          >
-                            <TaskCard
-                              task={task}
-                              onDelete={handleDelete}
-                              onStatusChange={handleStatusChange}
-                              onShowActivity={() => setActiveTaskForLog(task)}
-                            />
-                          </div>
-                        );
-                      })}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-            ))}
-          </div>
-        </DragDropContext>
+                          return isDraggable ? (
+                            <Draggable key={task._id} draggableId={task._id} index={index}>
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <TaskCard
+                                    task={task}
+                                    onDelete={handleDelete}
+                                    onStatusChange={handleStatusChange}
+                                    onShowActivity={() => setActiveTaskForLog(task)}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ) : (
+                            <div
+                              key={task._id}
+                              className="p-3 bg-gray-100 dark:bg-gray-900 border border-dashed dark:border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
+                            >
+                              <TaskCard
+                                task={task}
+                                onDelete={handleDelete}
+                                onStatusChange={handleStatusChange}
+                                onShowActivity={() => setActiveTaskForLog(task)}
+                              />
+                            </div>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
+              ))}
+            </div>
+          </DragDropContext>
         </div>
       )}
 
@@ -285,8 +321,6 @@ const TaskBoard = () => {
           onClose={() => setShowGantt(false)}
         />
       )}
-
-
     </div>
   );
 };

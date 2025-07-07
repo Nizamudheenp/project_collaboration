@@ -1,4 +1,3 @@
-// Changes in Dashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import TeamListSidebar from '../components/TeamListSidebar';
@@ -50,13 +49,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col md:flex-row">
+    <div className="h-screen pt-14 flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-white transition-colors">
       {!isMobile && (
         <>
-          <div className="w-1/4 border-r border-gray-200">
+          <div className="w-full md:w-1/4 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 transition-colors">
             <TeamListSidebar />
           </div>
-          <div className="w-3/4">
+          <div className="w-full md:w-3/4 bg-white dark:bg-neutral-900 transition-colors">
             <ProjectPanel />
           </div>
         </>
@@ -65,19 +64,31 @@ const Dashboard = () => {
       {isMobile && (
         <>
           {viewState !== 'teams' && (
-            <div className="p-2">
+            <div className="p-3 bg-white dark:bg-neutral-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
               <button
                 onClick={handleBack}
-                className="text-sm text-blue-600 hover:underline"
+                className="text-sm text-green-700 dark:text-green-400 hover:underline font-medium"
               >
                 ← Back
               </button>
             </div>
           )}
 
-          {viewState === 'teams' && <div className="w-full"><TeamListSidebar /></div>}
-          {viewState === 'projects' && <div className="w-full"><ProjectPanel /></div>}
-          {viewState === 'tasks' && <div className="w-full p-4"><TaskBoard /></div>}
+          {viewState === 'teams' && (
+            <div className="w-full bg-white dark:bg-neutral-900 transition-colors">
+              <TeamListSidebar />
+            </div>
+          )}
+          {viewState === 'projects' && (
+            <div className="w-full bg-white dark:bg-neutral-900 transition-colors">
+              <ProjectPanel />
+            </div>
+          )}
+          {viewState === 'tasks' && (
+            <div className="w-full bg-white dark:bg-neutral-900 p-4 transition-colors">
+              <TaskBoard />
+            </div>
+          )}
         </>
       )}
     </div>

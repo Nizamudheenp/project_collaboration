@@ -7,26 +7,27 @@ const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
 
   const handleGetStarted = () => {
-    navigate(user ? '/dashboard' : '/login');
+    navigate(user ? '/dashboard' : '/register');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
+    <div className="min-h-screen pt-14 bg-white text-green-900 dark:bg-black dark:text-white flex flex-col transition-colors duration-300">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center text-center px-6 py-24 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-inner">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Collabix</h1>
-        <p className="text-lg md:text-xl max-w-2xl mb-8">
+      <div className="flex flex-col items-center justify-center text-center px-6 py-24 bg-green-900 text-white shadow-inner">
+        <h1 className="text-5xl font-bold mb-4">Collabix</h1>
+        <p className="text-lg max-w-2xl mb-8">
           The simplest way to manage your team’s projects and tasks in one collaborative space.
         </p>
         <button
           onClick={handleGetStarted}
-          className="bg-white text-blue-700 px-8 py-3 rounded-full font-semibold text-sm sm:text-base transition-transform duration-200 hover:bg-gray-100 hover:scale-105 active:scale-95 shadow"
+          className="bg-white text-green-900 px-8 py-3 rounded-full font-semibold text-base transition hover:bg-gray-100 hover:scale-105 active:scale-95 shadow"
         >
           {user ? 'Continue to Collabix' : 'Get Started'}
         </button>
       </div>
 
-      <div className="py-16 px-6 md:px-12 lg:px-24 bg-white">
+      {/* Features */}
+      <div className="py-16 px-6 md:px-12 lg:px-24 bg-white dark:bg-zinc-900 transition-colors">
         <h2 className="text-3xl font-bold text-center mb-12">Why Choose Collabix?</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
@@ -63,18 +64,18 @@ const HomePage = () => {
           ].map((feature, i) => (
             <div
               key={i}
-              className="bg-gray-50 p-6 rounded-lg shadow hover:shadow-md transition"
+              className="bg-gray-50 dark:bg-zinc-800 p-6 rounded-xl shadow hover:shadow-md transition"
             >
               <div className="text-4xl mb-4">{feature.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm text-gray-600">{feature.desc}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{feature.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-100 py-6 text-center text-sm text-gray-500">
+      <footer className="bg-green-950 text-white py-6 text-center text-sm dark:bg-black">
         © {new Date().getFullYear()} Collabix — Built with 💻 by YourTeam
       </footer>
     </div>
