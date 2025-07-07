@@ -17,12 +17,11 @@ const MembersPage = () => {
 
   useEffect(() => {
     if (!selectedTeam) return;
-    const role = selectedTeam.members?.find((m) => m.userId === user._id)?.role;
+    const role = selectedTeam.members?.find((member) => member.userId === user._id)?.role;
     setIsAdmin(role === 'admin');
   }, [selectedTeam, user]);
 
-  useEffect(() => {
-    const fetchMembers = async () => {
+   const fetchMembers = async () => {
       try {
         setLoading(true);
         const res = await api.get(`/teams/${selectedTeam._id}`, {
@@ -36,6 +35,7 @@ const MembersPage = () => {
       }
     };
 
+  useEffect(() => {
     if (selectedTeam?._id) fetchMembers();
   }, [selectedTeam]);
 
@@ -51,7 +51,7 @@ const MembersPage = () => {
         },
         {
           label: 'Cancel',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     });
@@ -62,7 +62,7 @@ const MembersPage = () => {
       await api.delete(`/teams/${selectedTeam._id}/remove/${memberId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      setMembers((prev) => prev.filter((m) => m.userId !== memberId));
+      fetchMembers()
       toast.success('Member removed successfully');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to remove member');

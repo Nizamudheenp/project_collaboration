@@ -21,7 +21,7 @@ const teamRoutes = require('./routes/teamRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const commentRoutes = require('./routes/commentRoutes');
-
+const inviteRoutes = require('./routes/inviteRoutes');
 
 
 const connectDB = require('./config/db');
@@ -32,6 +32,7 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/invites', inviteRoutes);
 
 io.on('connection', (socket) => {
   console.log(` New client connected: ${socket.id}`);

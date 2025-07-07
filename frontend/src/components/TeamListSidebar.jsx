@@ -8,6 +8,7 @@ import api from '../api';
 import { setSelectedTeam } from '../redux/slices/teamSlice';
 import InviteMemberModal from './InviteMemberModal';
 import { toast } from 'sonner';
+import MyInvitations from './MyInvitations';
 
 const TeamListSidebar = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const TeamListSidebar = () => {
   const [teamName, setTeamName] = useState('');
   const [createError, setCreateError] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showMyInvites, setShowMyInvites] = useState(false);
   const [selectedTeamForInvite, setSelectedTeamForInvite] = useState(null);
 
   useEffect(() => {
@@ -72,10 +74,42 @@ const TeamListSidebar = () => {
   return (
     <div className="h-full bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-colors">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Teams</h2>
-        <button className="text-green-700 dark:text-green-400 hover:text-green-900" onClick={() => setShowModal(true)}>
-          <MdOutlineGroupAdd size={22} />
-        </button>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Teams</h2>
+        <div className="flex items-center space-x-2">
+          <Menu as="div" className="relative inline-block text-left">
+            <Menu.Button className="p-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
+              <FiMoreVertical size={18} />
+            </Menu.Button>
+            <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right bg-white dark:bg-neutral-800 border border-gray-200 dark:border-gray-700 rounded shadow-md z-50 text-sm">
+              <div className="py-1 px-2">
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className={`block w-full text-left px-2 py-1 rounded ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                        }`}
+                    >
+                    Create Team
+                    </button>
+                  )}
+                </Menu.Item>
+
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setShowMyInvites((prev) => !prev)}
+                      className={`block w-full text-left px-2 py-1 rounded ${active ? 'bg-gray-100 dark:bg-neutral-700' : ''
+                        }`}
+                    >
+                    My Invites
+                    </button>
+                  )}
+                </Menu.Item>
+              </div>
+            </Menu.Items>
+          </Menu>
+        </div>
+
       </div>
 
       <div className="overflow-y-auto flex-1">
@@ -91,8 +125,8 @@ const TeamListSidebar = () => {
               key={team._id}
               onClick={() => dispatch(setSelectedTeam(team))}
               className={`relative p-4 flex justify-between items-center cursor-pointer border-b border-gray-100 dark:border-gray-800 hover:bg-green-50 dark:hover:bg-neutral-800 transition ${selectedTeam?._id === team._id
-                  ? 'bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-300 font-medium'
-                  : 'text-gray-800 dark:text-white'
+                ? 'bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-300 font-medium'
+                : 'text-gray-800 dark:text-white'
                 }`}
             >
               <span className="truncate">{team.teamName}</span>
@@ -122,7 +156,7 @@ const TeamListSidebar = () => {
                       {({ active }) => (
                         <button
                           onClick={() => {
-                             confirmAlert({         //remember to style alerts
+                            confirmAlert({         //remember to style alerts
                               title: 'Confirm to delete',
                               message: `Are you sure to delete "${team.teamName}"? This will erase all your team data`,
                               buttons: [
@@ -189,6 +223,25 @@ const TeamListSidebar = () => {
           }}
         />
       )}
+
+      {showMyInvites && (
+  <div className="fixed inset-0 p-3 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="bg-white dark:bg-neutral-800 p-6 rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">My Invitations</h2>
+        <button
+          className="text-sm px-2 py-1 rounded bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-neutral-600"
+          onClick={() => setShowMyInvites(false)}
+        >
+          ✖
+        </button>
+      </div>
+      <MyInvitations />
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

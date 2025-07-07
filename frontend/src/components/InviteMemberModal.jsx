@@ -12,7 +12,7 @@ const InviteMemberModal = ({ teamId, onClose, teamName }) => {
     if (!email.trim()) return toast.error("Email is required");
     try {
       setLoading(true);
-      await api.post(`/teams/${teamId}/invite`, { email }, {
+      await api.post(`/invites/${teamId}/invite`, { email }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       toast.success('Invitation sent');
