@@ -147,11 +147,8 @@ const TaskBoard = () => {
     });
   };
 
-  const handleTaskCreated = (newTask) => {
-    setTasksByStatus((prev) => ({
-      ...prev,
-      [newTask.status]: [newTask, ...prev[newTask.status]],
-    }));
+  const handleTaskCreated = () => {
+   fetchTasks();
   };
 
   const exportBoardAsPDF = () => {

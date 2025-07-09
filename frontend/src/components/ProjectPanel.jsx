@@ -134,6 +134,7 @@ const ProjectPanel = () => {
         <CreateProjectModal
           onClose={() => setShowCreateModal(false)}
           onProjectCreated={handleProjectCreated}
+          teamId={selectedTeam._id}
         />
       )}
     </div>

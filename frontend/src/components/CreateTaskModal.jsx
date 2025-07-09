@@ -40,7 +40,7 @@ const CreateTaskModal = ({ onClose, onTaskCreated }) => {
         { title, description, dueDate, assignedTo, projectId: selectedProject._id },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
-      onTaskCreated(res.data);
+      onTaskCreated();
       toast.success('Task created successfully')
       onClose();
     } catch (err) {
