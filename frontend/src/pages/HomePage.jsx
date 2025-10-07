@@ -11,6 +11,14 @@ import {
   FaFigma,
 } from "react-icons/fa";
 
+import accessControllImg from "/src/assets/access-control.png"
+import dashboardimg from "/src/assets/dashboard.jpg"
+import heroImg from "/src/assets/hero-bg.jpg"
+import teamWorkImg from "/src/assets/teamwork.jpg"
+import user1Img from "/src/assets/user1.jpg"
+import user2Img from "/src/assets/user2.jpg"
+import user3Img from "/src/assets/user3.jpg"
+
 const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -63,7 +71,7 @@ const HomePage = () => {
         </motion.button>
 
         <motion.img
-          src="src/assets/hero-bg.jpg"
+          src={heroImg}
           alt="Collaboration illustration"
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 0.3, scale: 1 }}
@@ -94,19 +102,19 @@ const HomePage = () => {
           {
             title: "Collaborate Effortlessly",
             desc: "From brainstorming to execution, Collabix brings your entire team together in one place. Share ideas, assign tasks, and stay updated instantly.",
-            img: "src/assets/teamwork.jpg",
+            img: teamWorkImg,
             reverse: false,
           },
           {
             title: "Visual Project Boards",
             desc: "Manage projects the way your team works best — with flexible boards, timelines, and real-time progress tracking.",
-            img: "src/assets/dashboard.jpg",
+            img: dashboardimg,
             reverse: true,
           },
           {
             title: "Stay in Control",
             desc: "Assign roles, manage permissions, and ensure every team member has the right access. Collabix scales with your team.",
-            img: "src/assets/access-control.png",
+            img: accessControllImg,
             reverse: false,
           },
         ].map((item, i) => (
@@ -166,21 +174,21 @@ const HomePage = () => {
               role: "Product Manager",
               quote:
                 "Collabix keeps our remote team perfectly aligned — we can’t imagine working without it!",
-              img: "src/assets/user1.jpg",
+              img: user3Img,
             },
             {
               name: "James Carter",
               role: "Developer",
               quote:
                 "Tasks, boards, chat — everything’s in one place. It’s simple and powerful.",
-              img: "src/assets/user2.jpg",
+              img: user2Img,
             },
             {
               name: "Priya Mehta",
               role: "Designer",
               quote:
                 "Our collaboration flow feels so natural now. It just fits how teams work today.",
-              img: "src/assets/user3.jpg",
+              img: user1Img,
             },
           ].map((t, i) => (
             <FadeInSection key={i} delay={i * 0.1}>
