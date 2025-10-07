@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full  top-0 left-0 right-0 z-50 fixed bg-green-900 text-white dark:bg-green-900 shadow-md transition-colors">
+    <header className="w-full  top-0 left-0 right-0 z-50 fixed bg-green-800 text-white dark:bg-green-900 shadow-md transition-colors">
       <nav className="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
         <div
           className="font-bold text-2xl tracking-wide cursor-pointer select-none"
