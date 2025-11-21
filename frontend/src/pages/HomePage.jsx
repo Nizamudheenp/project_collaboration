@@ -212,9 +212,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* same nav */}
 
-      <section className="relative py-24 px-4 text-center bg-gradient-to-r from-green-800 to-green-600 text-white overflow-hidden">
+      <section className="relative py-24 px-4  text-center bg-gradient-to-r from-green-800 to-green-600 text-white overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -250,7 +249,7 @@ const HomePage = () => {
       </section>
 
       <footer className="bg-green-900 text-white py-6 text-center text-sm dark:bg-black">
-        © {new Date().getFullYear()} Collabix — Built with 💻 by YourTeam
+        © {new Date().getFullYear()} Collabix — All Rights Reserved
       </footer>
     </div>
   );

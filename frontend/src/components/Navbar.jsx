@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { toggleDarkMode } from '../../theme';
+import {  FaUser } from 'react-icons/fa';
+import { MdLightMode, MdOutlineLogout } from 'react-icons/md';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -15,44 +17,44 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full  top-0 left-0 right-0 z-50 fixed bg-green-800 text-white dark:bg-green-900 shadow-md transition-colors">
+    <header className="w-full top-0 left-0 right-0 z-50 fixed bg-green-900 text-white dark:bg-green-700 shadow-md transition-colors">
       <nav className="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
         <div
-          className="font-bold text-2xl tracking-wide cursor-pointer select-none"
+          className="font-bold dark:text-black text-2xl tracking-wide cursor-pointer select-none"
         >
           Collabix
         </div>
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/')}
-            className="bg-white text-green-700 dark:text-white dark:bg-green-800 text-sm px-3 py-1.5 rounded-md shadow hover:scale-105 transition"
+            className=" dark:text-black font-bold  text-sm px-3 py-1.5 rounded-md  hover:scale-105 transition"
           >
             Home
           </button>
           <button
             onClick={toggleDarkMode}
-            className="bg-white text-green-700 dark:text-white dark:bg-green-800 text-sm px-3 py-1.5 rounded-md shadow hover:scale-105 transition"
+            className="dark:text-black font-bold  text-sm px-3 py-1.5 rounded-md  hover:scale-105 transition"
           >
-            🔦
+            <MdLightMode size={18} />
           </button>
           {!user ? (
             <button
               onClick={() => navigate('/login')}
-              className="bg-white text-green-700 dark:text-white dark:bg-green-800 text-sm px-3 py-1.5 rounded-md shadow hover:scale-105 transition"
+              className="dark:text-black font-bold text-sm px-3 py-1.5 rounded-md  hover:scale-105 transition"
             >
               Login
             </button>
           ) : (
             <>
               <span className="flex items-center text-sm gap-1">
-                <span className="text-lg">👤</span>
-                <span className="hidden sm:inline">{user.name}</span>
+                <span className="text-lg dark:text-black font-bold"><FaUser/></span>
+                <span className="hidden sm:inline dark:text-black ">{user.name}</span>
               </span>
               <button
                 onClick={handleLogout}
-                className="bg-red-900 text-white dark:text-white dark:bg-red-900 text-sm px-3 py-1.5 rounded-md shadow hover:scale-105 transition"
+                className="dark:text-black font-bold text-sm px-3 py-1.5 rounded-md  hover:scale-105 transition"
               >
-                Logout
+                <MdOutlineLogout />
               </button>
             </>
           )}
