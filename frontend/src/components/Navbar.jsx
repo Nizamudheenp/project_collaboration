@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { toggleDarkMode } from '../../theme';
-import {  FaUser } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
 import { MdLightMode, MdOutlineLogout } from 'react-icons/md';
 
 const Navbar = () => {
@@ -47,7 +47,7 @@ const Navbar = () => {
           ) : (
             <>
               <span className="flex items-center text-sm gap-1">
-                <span className="text-lg dark:text-black font-bold"><FaUser/></span>
+                <span className="text-lg dark:text-black font-bold"><FaUser /></span>
                 <span className="hidden sm:inline dark:text-black ">{user.name}</span>
               </span>
               <button
