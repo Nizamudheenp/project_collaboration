@@ -18,11 +18,11 @@ const Navbar = () => {
 
   return (
     <header className="w-full top-0 left-0 right-0 z-50 fixed bg-green-900 text-white dark:bg-green-700 shadow-md transition-colors">
-      <nav className="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
+      <nav className="px-4 py-4 flex items-center justify-between max-w-7xl mx-auto">
         <div
           className="font-bold dark:text-black text-2xl tracking-wide cursor-pointer select-none"
         >
-          Collabix
+          <img className='w-10 h-10' src="images/logo.png" alt="" />
         </div>
         <div className="flex items-center gap-4">
           <button
