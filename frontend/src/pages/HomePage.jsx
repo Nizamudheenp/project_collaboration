@@ -9,9 +9,17 @@ import {
   FaGoogleDrive,
   FaTrello,
   FaFigma,
+  FaCheck,
+  FaPlus,
+  FaChevronDown,
+  FaRocket,
+  FaShieldAlt,
+  FaBolt,
+  FaLightbulb,
+  FaMobileAlt,
 } from "react-icons/fa";
 
-import accessControllImg from "/src/assets/access-control.png"
+import accessControllImg from "/src/assets/access-control.jpg"
 import dashboardimg from "/src/assets/dashboard.jpg"
 import heroImg from "/src/assets/hero-bg.jpg"
 import teamWorkImg from "/src/assets/teamwork.jpg"
@@ -47,12 +55,34 @@ const HomePage = () => {
       <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 md:py-48 overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-green-800 text-white">
         <div className="relative z-10 max-w-5xl mx-auto">
           <motion.h1
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.1 } },
+            }}
             className="text-7xl md:text-9xl font-black mb-6 tracking-tighter leading-none"
           >
-            Collabix<span className="text-green-400">.</span>
+            {["C", "o", "l", "l", "a", "b", "i", "x"].map((letter, i) => (
+              <motion.span
+                key={i}
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="inline-block"
+              >
+                {letter}
+              </motion.span>
+            ))}
+            <motion.span
+              variants={{
+                hidden: { opacity: 0, scale: 0 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              className="text-green-400 inline-block"
+            >
+              .
+            </motion.span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -77,9 +107,17 @@ const HomePage = () => {
             >
               {user ? "Go to Dashboard" : "Start Collaborating — It's Free"}
             </motion.button>
-            <button className="px-12 py-4 rounded-full font-bold text-lg border-2 border-green-400/30 hover:bg-green-400/10 transition-all">
-              Watch Demo
-            </button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="mt-16 flex items-center justify-center gap-8 grayscale opacity-50"
+          >
+            <span className="text-sm font-semibold uppercase tracking-widest text-green-300/60">Trusted by</span>
+            <div className="flex gap-6 text-2xl">
+              <FaSlack /> <FaGithub /> <FaTrello /> <FaFigma />
+            </div>
           </motion.div>
         </div>
 
@@ -95,13 +133,29 @@ const HomePage = () => {
         {/* Decorative elements */}
         <motion.div
           className="absolute top-20 left-10 w-64 h-64 bg-green-500/20 rounded-full blur-[100px]"
-          animate={{ x: [0, 40, 0], y: [0, -40, 0] }}
+          animate={{
+            x: [0, 40, 0],
+            y: [0, -40, 0],
+            scale: [1, 1.1, 1]
+          }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="absolute bottom-20 right-10 w-96 h-96 bg-green-400/20 rounded-full blur-[120px]"
-          animate={{ x: [0, -60, 0], y: [0, 60, 0] }}
+          animate={{
+            x: [0, -60, 0],
+            y: [0, 60, 0],
+            scale: [1, 1.2, 1]
+          }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/4 w-32 h-32 bg-green-300/10 rounded-full blur-[60px]"
+          animate={{
+            y: [0, 100, 0],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
       </section>
 
@@ -109,15 +163,24 @@ const HomePage = () => {
       <section className="py-16 bg-green-900 text-white border-y border-green-800/50">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { label: "Active Teams", val: "15k+" },
-            { label: "Tasks Completed", val: "500k+" },
-            { label: "User Rating", val: "4.9/5" },
-            { label: "Daily Users", val: "100k+" },
+            { label: "Active Teams", val: 15 },
+            { label: "Tasks Completed", val: 500 },
+            { label: "User Rating", val: 4.9 },
+            { label: "Daily Users", val: 100 },
           ].map((stat, i) => (
-            <div key={i} className="flex flex-col">
-              <span className="text-4xl md:text-5xl font-black mb-1">{stat.val}</span>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="flex flex-col"
+            >
+              <span className="text-4xl md:text-5xl font-black mb-1">
+                {stat.val}{stat.label !== "User Rating" ? "k+" : "/5"}
+              </span>
               <span className="text-green-300 text-sm uppercase tracking-widest font-semibold">{stat.label}</span>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -165,7 +228,7 @@ const HomePage = () => {
                 }`}
             >
               <div className="w-full md:w-3/5 group">
-                <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+                <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-video">
                   <motion.img
                     src={item.img}
                     alt={item.title}
@@ -191,6 +254,58 @@ const HomePage = () => {
         ))}
       </section>
 
+      {/* Feature Grid Section */}
+      <section className="py-32 px-6 bg-zinc-50 dark:bg-zinc-950">
+        <div className="max-w-7xl mx-auto">
+          <FadeInSection>
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-black mb-4">Everything you need to <span className="text-green-600">scale.</span></h2>
+              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Focus on what matters. We've built the tools to handle the rest.</p>
+            </div>
+          </FadeInSection>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
+            {[
+              { icon: FaRocket, title: "Fast Setup", desc: "Get your team up and running in under 5 minutes with our intuitive onboarding." },
+              { icon: FaShieldAlt, title: "Secure Data", desc: "Enterprise-grade encryption and regular backups keep your information safe." },
+              { icon: FaBolt, title: "Live Sync", desc: "Experience zero-latency updates across all devices, keeping everyone in sync." },
+              { icon: FaLightbulb, title: "Smart Insights", desc: "AI-driven analytics help you identify bottlenecks and optimize your workflow." },
+              { icon: FaMobileAlt, title: "Mobile Ready", desc: "Stay connected on the go with our fully responsive web and mobile experience." },
+              { icon: FaTrello, title: "Kanban View", desc: "Organize tasks visually and move them through your custom workflow easily." },
+              { icon: FaSlack, title: "Integrations", desc: "Connect with Slack, Github, and more to keep all your tools in one place." },
+              { icon: FaPlus, title: "Custom Fields", desc: "Tailor your tasks and boards with custom data fields to fit your unique needs." },
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                whileHover={{
+                  y: -10,
+                  boxShadow: "0 20px 40px -10px rgba(22, 163, 74, 0.1)",
+                  borderColor: "rgba(22, 163, 74, 0.5)"
+                }}
+                className="p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors group cursor-default"
+              >
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 mb-6 group-hover:scale-110 transition-transform group-hover:bg-green-600 group-hover:text-white">
+                  <feature.icon className="text-2xl" />
+                </div>
+                <h4 className="text-xl font-bold mb-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">{feature.title}</h4>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* How it Works Section */}
       <section className="py-32 px-6 bg-zinc-50 dark:bg-zinc-950">
         <FadeInSection>
@@ -200,21 +315,35 @@ const HomePage = () => {
           </div>
         </FadeInSection>
 
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.2 } }
+          }}
+          className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12"
+        >
           {[
             { step: "01", title: "Plan", desc: "Define your goals and break them down into actionable tasks within minutes." },
             { step: "02", title: "Collaborate", desc: "Assign owners, set deadlines, and discuss progress in a unified environment." },
             { step: "03", title: "Deliver", desc: "Track milestones and cross the finish line together, right on schedule." },
           ].map((step, i) => (
-            <FadeInSection key={i} delay={i * 0.2}>
-              <div className="p-10 bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-800 h-full">
-                <span className="text-6xl font-black text-green-600/20 dark:text-green-400/10 block mb-6">{step.step}</span>
-                <h4 className="text-3xl font-bold mb-4">{step.title}</h4>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</p>
-              </div>
-            </FadeInSection>
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, scale: 0.9, y: 30 },
+                visible: { opacity: 1, scale: 1, y: 0 }
+              }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="p-10 bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-800 h-full transition-shadow hover:shadow-xl"
+            >
+              <span className="text-6xl font-black text-green-600/20 dark:text-green-400/10 block mb-6">{step.step}</span>
+              <h4 className="text-3xl font-bold mb-4">{step.title}</h4>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</p>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Integrations */}
@@ -239,6 +368,7 @@ const HomePage = () => {
           </div>
         </FadeInSection>
       </section>
+
 
       {/* Testimonials */}
       <section className="py-32 px-6 md:px-16 bg-white dark:bg-zinc-900 text-center">
@@ -292,6 +422,40 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-32 px-6 bg-zinc-50 dark:bg-zinc-950">
+        <div className="max-w-3xl mx-auto">
+          <FadeInSection>
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-black mb-6">Frequently asked questions</h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400">Everything you need to know about Collabix.</p>
+            </div>
+          </FadeInSection>
+
+          <div className="space-y-4">
+            {[
+              { q: "Is there a limit to how many collaborators I can invite?", a: "No, you can invite as many team members as you need. Collabix is built for teams of all sizes, and everything is completely free." },
+              { q: "Can I import my data from Trello or Jira?", a: "Yes! Collabix has a one-click import tool that allows you to bring your existing projects over from most major project management tools seamlessly." },
+              { q: "How secure is my team's data?", a: "Security is our top priority. We use AES-256 encryption for data at rest and TLS 1.2+ for data in transit. We also perform regular third-party security audits." },
+              { q: "What kind of support can I expect?", a: "All our users have access to our community forum, help center, and email support. We're here to help you and your team succeed." }
+            ].map((faq, i) => (
+              <FadeInSection key={i} delay={i * 0.1}>
+                <details className="group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden transition-all">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-lg">
+                    {faq.q}
+                    <FaChevronDown className="text-gray-400 group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 border-t border-zinc-100 dark:border-zinc-800">
+                    {faq.a}
+                  </div>
+                </details>
+              </FadeInSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* Final CTA */}
       <section className="relative py-40 px-6 text-center bg-green-900 text-white overflow-hidden">
         <motion.div
@@ -326,7 +490,6 @@ const HomePage = () => {
           <div className="text-2xl font-black">Collabix<span className="text-green-500">.</span></div>
           <div className="flex gap-8 text-zinc-400 font-medium">
             <a href="#" className="hover:text-white transition">Features</a>
-            <a href="#" className="hover:text-white transition">Pricing</a>
             <a href="#" className="hover:text-white transition">Twitter</a>
             <a href="#" className="hover:text-white transition">Contact</a>
           </div>
