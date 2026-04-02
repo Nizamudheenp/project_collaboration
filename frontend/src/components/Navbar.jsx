@@ -22,7 +22,7 @@ const Navbar = () => {
         <div
           className="font-bold dark:text-black text-2xl tracking-wide cursor-pointer select-none"
         >
-          <img className='w-10 h-10' src="images/logo.png" alt="" />
+          <img className='w-10 h-10 rounded-full object-cover' src="images/logo.png" alt="" />
         </div>
         <div className="flex items-center gap-4">
           <button
